@@ -16,14 +16,22 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    # Tự động tạo Gradle Wrapper nếu dự án chưa có
     - name: Setup Gradle
-      uses: gradle/gradle-build-action@v2
+      run: |
+        gradle wrapper
 
-    - name: Build APK
-      run: gradle assembleDebug
+    # Cấp quyền thực thi cho gradlew
+    - name: Make gradlew executable
+      run: chmod +x gradlew
 
+    # Biên dịch file APK
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
+
+    # Đóng gói và cho phép tải file APK về
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
-        name: app-debug
+        name: AutoHotspot-APK
         path: app/build/outputs/apk/debug/app-debug.apk
